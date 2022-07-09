@@ -1,0 +1,22 @@
+﻿The Terraria Flag Randomizer attempts to change up the Terraria experience, by shuffling several progression flags around the game.
+Will you find Hardmode by defeating the Eye of Cthulhu, or perhaps defeat the Pumpkin Moon to gain access to the Dungeon? Every seed can have different results.
+
+Current features:
+[list]
+[*]Major progression flags (Skeletron, Hardmode, Mechanical bosses, Plantera, and Golem) are removed form their respective bosses and shuffled around as rewards
+[*]Randomization is based on the world seed
+[*]Progressive loot bags, which reward items based on your progress in the randomizer
+[*]Rewards can end up on any of the bosses, or a few minibosses
+[*]The world is tweaked so that both Corruption and Crimson, as well as their biome-exclusive enemies, are present
+[*]Tweaks and logic should ensure that every seed is beatable
+[/list]
+
+Planned features:
+[list]
+[*]More checks (including invasion events, Town NPCs, and other major areas)
+[*]Chestsanity Mode (Rewards can be distributed into random chests across the world)
+[*]Traps (Some checks might have a chance to give a negative, or funny, effect)
+[*]Better logic, allowing more distinct seeds
+[*]Plandomizer??
+[*]And possibly more...
+[/list]

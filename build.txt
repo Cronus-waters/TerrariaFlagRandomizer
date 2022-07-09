@@ -1,0 +1,5 @@
+displayName = The Terraria Flag Randomizer
+author = Cronus
+version = 0.1.3
+buildIgnore = *.csproj, *.csproj.user, *.sln, Content/Items/TestItems/*, Common/Commands/*
+homepage = https://forums.terraria.org/index.php?threads/terraria-flag-randomizer.113407/
