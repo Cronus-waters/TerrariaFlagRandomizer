@@ -236,12 +236,27 @@ namespace TerrariaFlagRandomizer
                 return;
             }
             int port = Int32.Parse(args[2]);
-            session = ArchipelagoSessionFactory.CreateSession(args[1], port);
-            LoginResult result = session.TryConnectAndLogin("Terraria", args[0], new Version(0, 3, 2), ItemsHandlingFlags.NoItems);
-            if (!result.Successful)
+            bool retry = true;
+            while (retry)
             {
-                RandomizerUtils.SendText(result.ToString());
-                return;
+                try
+                {
+                    session = ArchipelagoSessionFactory.CreateSession(args[1], port);
+                    LoginResult result = session.TryConnectAndLogin("Terraria", args[0], new Version(0, 3, 2), ItemsHandlingFlags.IncludeStartingInventory);
+                    if (!result.Successful)
+                    {
+                        RandomizerUtils.SendText(result.ToString());
+                        return;
+                    }
+                    retry = false;
+                }
+                catch (PlatformNotSupportedException)
+                {
+
+                } catch(Exception e)
+                {
+                    RandomizerUtils.SendText("Error connecting to Archipelago server: " + e.Message, 255, 0, 0);
+                }
             }
             On.Terraria.Chat.ChatCommandProcessor.ProcessIncomingMessage += OnTerrariaChatMessage;
             session.Socket.PacketReceived += OnPacketReceived;

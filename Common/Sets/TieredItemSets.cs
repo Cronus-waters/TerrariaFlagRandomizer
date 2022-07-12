@@ -70,7 +70,7 @@ namespace TerrariaFlagRandomizer.Common.Sets
             {1255, new int[3]{97, 30, 50 } },
             {1265, new int[3]{97, 50, 100 } },
             {1319, new int[3]{949, 30, 60 } },
-            {1782, new int[3]{1782, 49, 99 } },
+            {1782, new int[3]{1783, 49, 99 } },
             {1784, new int[3]{1785, 25, 50 } },
             {1809, new int[3]{1809, 29, 59 } },
             {1835, new int[3]{1836, 30, 60 } },
