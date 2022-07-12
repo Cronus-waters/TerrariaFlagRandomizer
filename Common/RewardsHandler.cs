@@ -7,22 +7,58 @@ using Terraria.ModLoader;
 using TerrariaFlagRandomizer.Content.Items;
 using TerrariaFlagRandomizer.Common.Sets;
 using TerrariaFlagRandomizer.Common.Systems;
+using TerrariaFlagRandomizer.Common.Helpers;
 
 namespace TerrariaFlagRandomizer.Common
 {
     internal class RewardsHandler
     {
-        public static void SpawnReward(NPC npc, int type)
+        public static void SpawnReward(int type, NPC npc = null)
         {
             string location = LocationSets.CheckToLocation[type];
             int reward = RandomizerSystem.locationRewardPairs[location];
-            if (reward == 0) SpawnLootBag(npc);
-            else SetFlag(reward, npc.boss);
+            if (reward == 0)
+            {
+                if (npc != null) SpawnLootBag(npc);
+                else
+                {
+                    foreach (Player player in Main.player)
+                    {
+                        if (player.dead || !player.active) continue;
+                        SpawnLootBagOnPlayer(player);
+                    }
+                }
+            }
+            else
+            {
+                if(npc != null) SetFlag(reward, npc.boss);
+                else SetFlag(reward, false);
+            }
+        }
+
+        public static void ReceiveArchipelagoItem(int type)
+        {
+            int reward = ArchipelagoSets.ArchipelagoToRewardID[type];
+            ReceiveItem(reward);
+        }
+
+        public static void ReceiveItem(int type)
+        {
+            if (type == 0)
+            {
+                RandomizerUtils.SendText("Received Progressive Loot Bag");
+                foreach (Player player in Main.player)
+                {
+                    if (player.dead || !player.active) continue;
+                    SpawnLootBagOnPlayer(player);
+                }
+            }
+            else SetFlag(type, false);
         }
 
         public static void SpawnLootBag(NPC npc)
         {
-            var source = npc.GetSource_Loot();
+            // var source = npc.GetSource_Loot();
             int type;
             if (NPC.downedGolemBoss) type = ModContent.ItemType<LootBag6>();
             else if (NPC.downedPlantBoss) type = ModContent.ItemType<LootBag5>();
@@ -30,7 +66,21 @@ namespace TerrariaFlagRandomizer.Common
             else if (Main.hardMode) type = ModContent.ItemType<LootBag3>();
             else if (NPC.downedBoss3) type = ModContent.ItemType<LootBag2>();
             else type = ModContent.ItemType<LootBag1>();
-            Item.NewItem(source, (int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, type);
+            // Item.NewItem(source, (int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, type);
+            npc.DropItemInstanced(npc.position, npc.Size, type, interactionRequired: false);
+        }
+
+        public static void SpawnLootBagOnPlayer(Player player)
+        {
+            var source = player.GetSource_GiftOrReward();
+            int type;
+            if (NPC.downedGolemBoss) type = ModContent.ItemType<LootBag6>();
+            else if (NPC.downedPlantBoss) type = ModContent.ItemType<LootBag5>();
+            else if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3) type = ModContent.ItemType<LootBag4>();
+            else if (Main.hardMode) type = ModContent.ItemType<LootBag3>();
+            else if (NPC.downedBoss3) type = ModContent.ItemType<LootBag2>();
+            else type = ModContent.ItemType<LootBag1>();
+            player.QuickSpawnItem(source, type);
         }
 
         public static void TriggerHardmode(bool fromBoss = false)

@@ -3,15 +3,27 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using Terraria;
 using Terraria.ModLoader;
+using Archipelago.MultiClient.Net;
+using Archipelago.MultiClient.Net.Packets;
+using Archipelago.MultiClient.Net.Enums;
+using Archipelago.MultiClient.Net.Models;
+using Archipelago.MultiClient.Net.Helpers;
+using TerrariaFlagRandomizer.Common;
+using TerrariaFlagRandomizer.Common.Helpers;
+using TerrariaFlagRandomizer.Common.Archipelago;
 
 namespace TerrariaFlagRandomizer
 {
 	public class TerrariaFlagRandomizer : Mod
 	{
         //public const string AssetPath = $"{nameof(TerrariaFlagRandomizer)}/Assets/";
+        public static TerrariaFlagRandomizer instance;
+        public static ArchipelagoSession session;
+        public static bool isArchipelago = false;
 
         public override void Load()
         {
+            // IL hooks
             IL.Terraria.NPC.DoDeathEvents += RemoveWOF;
             IL.Terraria.NPC.DoDeathEvents += RemoveDestroyer;
             IL.Terraria.NPC.DoDeathEvents += RemovePlant;
@@ -19,6 +31,34 @@ namespace TerrariaFlagRandomizer
             IL.Terraria.NPC.DoDeathEvents += RemovePrime;
             IL.Terraria.NPC.DoDeathEvents += RemoveTwins;
             IL.Terraria.NPC.DoDeathEvents += RemoveGolem;
+
+            // Archipelago hooks
+            On.Terraria.WorldGen.SaveAndQuit += OnSaveAndQuit;
+
+            isArchipelago = false;
+        }
+
+        public override void Unload()
+        {
+            // IL hooks
+            IL.Terraria.NPC.DoDeathEvents -= RemoveWOF;
+            IL.Terraria.NPC.DoDeathEvents -= RemoveDestroyer;
+            IL.Terraria.NPC.DoDeathEvents -= RemovePlant;
+            IL.Terraria.NPC.DoDeathEvents -= RemoveSkeletron;
+            IL.Terraria.NPC.DoDeathEvents -= RemovePrime;
+            IL.Terraria.NPC.DoDeathEvents -= RemoveTwins;
+            IL.Terraria.NPC.DoDeathEvents -= RemoveGolem;
+
+            // Archipelago hooks
+            On.Terraria.WorldGen.SaveAndQuit -= OnSaveAndQuit;
+
+            isArchipelago = false;
+        }
+
+        public static void OnSaveAndQuit(On.Terraria.WorldGen.orig_SaveAndQuit orig, Action callback)
+        {
+            orig(callback);
+            DisconnectFromServer();
         }
 
         private static void RemoveWOF(ILContext il)
@@ -181,6 +221,89 @@ namespace TerrariaFlagRandomizer
             // However, the arguments for the now removed method call were already loaded into the stack, so to prevent errors, we add two Pop instructions, to remove them
             c.Emit(OpCodes.Pop);
             c.Emit(OpCodes.Pop);
+        }
+
+        public static void ConnectToServer(string input, string[] args)
+        {
+            if(args.Length != 3)
+            {
+                RandomizerUtils.SendText("Not enough arguments", 255, 0, 0);
+                return;
+            }
+            if(session != null && session.Socket.Connected)
+            {
+                RandomizerUtils.SendText("Already connected to server", 255, 0, 0);
+                return;
+            }
+            int port = Int32.Parse(args[2]);
+            session = ArchipelagoSessionFactory.CreateSession(args[1], port);
+            LoginResult result = session.TryConnectAndLogin("Terraria", args[0], new Version(0, 3, 2), ItemsHandlingFlags.NoItems);
+            if (!result.Successful)
+            {
+                RandomizerUtils.SendText(result.ToString());
+                return;
+            }
+            On.Terraria.Chat.ChatCommandProcessor.ProcessIncomingMessage += OnTerrariaChatMessage;
+            session.Socket.PacketReceived += OnPacketReceived;
+            ArchipelagoHelper.CompleteLocationChecks();
+            RandomizerUtils.SendText("Connected to Archipelago server");
+            isArchipelago = true;
+        }
+
+        public static void DisconnectFromServer()
+        {
+            if(session == null || !session.Socket.Connected)
+            {
+                RandomizerUtils.SendText("Not connected to Archipelago server", 255, 0, 0);
+                return;
+            }
+            On.Terraria.Chat.ChatCommandProcessor.ProcessIncomingMessage -= OnTerrariaChatMessage;
+            session.Socket.PacketReceived -= OnPacketReceived;
+            session.Socket.Disconnect();
+            RandomizerUtils.SendText("Disconnected from Archipelago server");
+            isArchipelago = false;
+        }
+
+        public static void OnTerrariaChatMessage(On.Terraria.Chat.ChatCommandProcessor.orig_ProcessIncomingMessage orig, Terraria.Chat.ChatCommandProcessor self, Terraria.Chat.ChatMessage message, int clientID)
+        {
+            orig(self, message, clientID);
+            session.Socket.SendPacket(new SayPacket() { Text = message.Text });
+        }
+
+        public static void OnPacketReceived(ArchipelagoPacketBase packet)
+        {
+            ArchipelagoPacketType type = packet.PacketType;
+            if(type == ArchipelagoPacketType.Print)
+            {
+                PrintPacket received = (PrintPacket)packet;
+                if (!received.Text.Contains("Space:"))
+                {
+                    RandomizerUtils.SendText(received.Text);
+                }
+                return;
+            }
+            if(type == ArchipelagoPacketType.RoomUpdate)
+            {
+                RoomUpdatePacket received = (RoomUpdatePacket)packet;
+                return;
+            }
+            if(type == ArchipelagoPacketType.PrintJSON)
+            {
+                ItemPrintJsonPacket received = (ItemPrintJsonPacket)packet;
+                int playerID = Int32.Parse(received.Data[0].Text);
+                long itemID = Int64.Parse(received.Data[2].Text);
+                long locationID = Int64.Parse(received.Data[4].Text);
+                string text = session.Players.GetPlayerAlias(playerID) + received.Data[1].Text;
+                text += session.Items.GetItemName(itemID) + received.Data[3].Text;
+                text += session.Locations.GetLocationNameFromId(locationID) + received.Data[5].Text;
+                RandomizerUtils.SendText(text);
+                if(session.ConnectionInfo.Slot != received.ReceivingPlayer) return;
+                int archipelagoItemID = received.Item.Item;
+                RewardsHandler.ReceiveArchipelagoItem(archipelagoItemID);
+                //ArchipelagoItemManager.ArchipelagoItemReceived(archipelagoItemID);
+                return;
+            }
+            RandomizerUtils.SendText("Received unhandled packet type " + type, 255, 255, 0);
         }
     }
 }

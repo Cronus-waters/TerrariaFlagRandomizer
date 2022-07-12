@@ -29,7 +29,8 @@ namespace TerrariaFlagRandomizer.Common.Sets
             new Location("PumpkingReward", "Boss", new string[]{ "Skeletron", "Hardmode", "PlantBoss" }),
             new Location("EverscreamReward", "Boss", new string[]{ "Skeletron", "Hardmode", "PlantBoss" }),
             new Location("SantankReward", "Boss", new string[]{ "Skeletron", "Hardmode", "PlantBoss" }),
-            new Location("IceQueenReward", "Boss", new string[]{ "Skeletron", "Hardmode", "PlantBoss" })
+            new Location("IceQueenReward", "Boss", new string[]{ "Skeletron", "Hardmode", "PlantBoss" }),
+            new Location("MoonLordReward", "Boss", new string[]{ "Skeletron", "Hardmode", "PlantBoss" })
         };
 
         public static List<Location> MinibossLocations = new List<Location>
@@ -67,9 +68,9 @@ namespace TerrariaFlagRandomizer.Common.Sets
             { 22, "MothronReward" },
             { 23, "HallowMimicReward" },
             { 24, "CorruptMimicReward" },
-            { 25, "CrimsonMimicReward" }
+            { 25, "CrimsonMimicReward" },
+            { 26, "MoonLordReward" }
         };
-
         public static List<Location> GetAllLocations()
         {
             List<Location> list = new List<Location>();

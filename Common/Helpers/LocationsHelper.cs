@@ -86,7 +86,6 @@ namespace TerrariaFlagRandomizer.Common.Helpers
                 // Item not placed
                 return Array.Empty<string>();
             }
-            throw new NotImplementedException();
         }
     }
 }

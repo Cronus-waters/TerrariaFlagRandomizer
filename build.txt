@@ -1,5 +1,6 @@
 displayName = The Terraria Flag Randomizer
 author = Cronus
 version = 0.1.3
-buildIgnore = *.csproj, *.csproj.user, *.sln, Content/Items/TestItems/*, Common/Commands/*
+buildIgnore = *.csproj, *.csproj.user, *.sln, Content/Items/TestItems/*, Common/Commands/TestCommands/*
 homepage = https://forums.terraria.org/index.php?threads/terraria-flag-randomizer.113407/
+dllReferences = Archipelago.MultiClient.Net, websocket-sharp, Newtonsoft.Json

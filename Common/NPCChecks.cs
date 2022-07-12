@@ -2,6 +2,8 @@
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaFlagRandomizer.Common.Systems;
+using TerrariaFlagRandomizer.Common.Sets;
+using TerrariaFlagRandomizer.Common.Archipelago;
 
 namespace TerrariaFlagRandomizer.Common
 {
@@ -14,13 +16,25 @@ namespace TerrariaFlagRandomizer.Common
                 case NPCID.KingSlime:
                     if (!NPC.downedSlimeKing)
                     {
-                        RewardsHandler.SpawnReward(npc, 0);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[0];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(0, npc);
                     }
                     break;
                 case NPCID.EyeofCthulhu:
                     if (!NPC.downedBoss1)
                     {
-                        RewardsHandler.SpawnReward(npc, 1);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[1];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(1, npc);
                     }
                     break;
                 case NPCID.EaterofWorldsHead:
@@ -29,7 +43,13 @@ namespace TerrariaFlagRandomizer.Common
                     if(npc.boss) {
                         if (!NPCCheckSystem.firstEaterKill)
                         {
-                            RewardsHandler.SpawnReward(npc, 2);
+                            if (TerrariaFlagRandomizer.isArchipelago)
+                            {
+                                string locationName = LocationSets.CheckToLocation[2];
+                                ArchipelagoHelper.locationsCompleted.Add(locationName);
+                                ArchipelagoHelper.CompleteLocationChecks();
+                            }
+                            else RewardsHandler.SpawnReward(2, npc);
                             NPCCheckSystem.firstEaterKill = true;
                         }
                     }
@@ -37,40 +57,76 @@ namespace TerrariaFlagRandomizer.Common
                 case NPCID.BrainofCthulhu:
                     if (!NPCCheckSystem.firstBrainKill)
                     {
-                        RewardsHandler.SpawnReward(npc, 3);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[3];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(3, npc);
                         NPCCheckSystem.firstBrainKill = true;
                     }
                     break;
                 case NPCID.SkeletronHead:
                     if (!NPCCheckSystem.firstSkeletronKill)
                     {
-                        RewardsHandler.SpawnReward(npc, 4);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[4];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(4, npc);
                         NPCCheckSystem.firstSkeletronKill = true;
                     }
                     break;
                 case NPCID.QueenBee:
                     if (!NPC.downedQueenBee)
                     {
-                        RewardsHandler.SpawnReward(npc, 5);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[5];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(5, npc);
                     }
                     break;
                 case NPCID.Deerclops:
                     if (!NPC.downedDeerclops)
                     {
-                        RewardsHandler.SpawnReward(npc, 6);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[6];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(6, npc);
                     }
                     break;
                 case NPCID.WallofFlesh:
                     if (!NPCCheckSystem.firstWOFKill)
                     {
-                        RewardsHandler.SpawnReward(npc, 7);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[7];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(7, npc);
                         NPCCheckSystem.firstWOFKill = true;
                     }
                     break;
                 case NPCID.QueenSlimeBoss:
                     if (!NPC.downedQueenSlime)
                     {
-                        RewardsHandler.SpawnReward(npc, 8);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[8];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(8, npc);
                     }
                     break;
                 case NPCID.Retinazer:
@@ -79,7 +135,13 @@ namespace TerrariaFlagRandomizer.Common
                     {
                         if (!NPCCheckSystem.firstTwinsKill)
                         {
-                            RewardsHandler.SpawnReward(npc, 9);
+                            if (TerrariaFlagRandomizer.isArchipelago)
+                            {
+                                string locationName = LocationSets.CheckToLocation[9];
+                                ArchipelagoHelper.locationsCompleted.Add(locationName);
+                                ArchipelagoHelper.CompleteLocationChecks();
+                            }
+                            else RewardsHandler.SpawnReward(9, npc);
                             NPCCheckSystem.firstTwinsKill = true;
                         }
                     }
@@ -87,61 +149,115 @@ namespace TerrariaFlagRandomizer.Common
                 case NPCID.TheDestroyer:
                     if (!NPCCheckSystem.firstDestroyerKill)
                     {
-                        RewardsHandler.SpawnReward(npc, 10);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[10];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(10, npc);
                         NPCCheckSystem.firstDestroyerKill = true;
                     }
                     break;
                 case NPCID.SkeletronPrime:
                     if (!NPCCheckSystem.firstPrimeKill)
                     {
-                        RewardsHandler.SpawnReward(npc, 11);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[11];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(11, npc);
                         NPCCheckSystem.firstPrimeKill = true;
                     }
                     break;
                 case NPCID.Plantera:
                     if (!NPCCheckSystem.firstPlantKill)
                     {
-                        RewardsHandler.SpawnReward(npc, 12);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[12];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(12, npc);
                         NPCCheckSystem.firstPlantKill = true;
                     }
                     break;
                 case NPCID.Golem:
                     if (!NPCCheckSystem.firstGolemKill)
                     {
-                        RewardsHandler.SpawnReward(npc, 13);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[13];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(13, npc);
                         NPCCheckSystem.firstGolemKill = true;
                     }
                     break;
                 case NPCID.DukeFishron:
                     if (!NPC.downedFishron)
                     {
-                        RewardsHandler.SpawnReward(npc, 14);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[14];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(14, npc);
                     }
                     break;
                 case NPCID.HallowBoss:
                     if (!NPC.downedEmpressOfLight)
                     {
-                        RewardsHandler.SpawnReward(npc, 15);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[15];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(15, npc);
                     }
                     break;
                 case NPCID.CultistBoss:
                     if (!NPC.downedAncientCultist)
                     {
-                        RewardsHandler.SpawnReward(npc, 16);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[16];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(16, npc);
                     }
                     break;
-                /*case NPCID.MoonLordCore:
+                case NPCID.MoonLordCore:
                     Main.NewText("Moon Lord defeated");
                     if (!NPC.downedMoonlord)
                     {
                         Main.NewText("First Moon Lord kill");
-                        SpawnLootBag(npc);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[26];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(26, npc);
                     }
-                    break;*/
+                    break;
                 case NPCID.Mothron:
                     if (!NPCCheckSystem.firstMothronKill)
                     {
-                        RewardsHandler.SpawnReward(npc, 22);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[22];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(22, npc);
                         NPCCheckSystem.firstMothronKill = true;
                         if(Main.netMode == NetmodeID.Server)
                         {
@@ -152,7 +268,13 @@ namespace TerrariaFlagRandomizer.Common
                 case NPCID.BigMimicHallow:
                     if (!NPCCheckSystem.firstHallowMimicKill)
                     {
-                        RewardsHandler.SpawnReward(npc, 23);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[23];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(23, npc);
                         NPCCheckSystem.firstHallowMimicKill = true;
                         if(Main.netMode == NetmodeID.Server)
                         {
@@ -163,7 +285,13 @@ namespace TerrariaFlagRandomizer.Common
                 case NPCID.BigMimicCorruption:
                     if (!NPCCheckSystem.firstCorruptMimicKill)
                     {
-                        RewardsHandler.SpawnReward(npc, 24);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[24];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(24, npc);
                         NPCCheckSystem.firstCorruptMimicKill = true;
                         if(Main.netMode == NetmodeID.Server)
                         {
@@ -173,7 +301,13 @@ namespace TerrariaFlagRandomizer.Common
                     break;
                 case NPCID.BigMimicCrimson:
                     if (!NPCCheckSystem.firstCrimsonMimicKill){
-                        RewardsHandler.SpawnReward(npc, 25);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[25];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(25, npc);
                         NPCCheckSystem.firstCrimsonMimicKill = true;
                         if (Main.netMode == NetmodeID.Server)
                         {
@@ -184,31 +318,61 @@ namespace TerrariaFlagRandomizer.Common
                 case NPCID.MourningWood:
                     if (Main.pumpkinMoon && !NPC.downedHalloweenTree)
                     {
-                        RewardsHandler.SpawnReward(npc, 17);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[17];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(17, npc);
                     }
                     break;
                 case NPCID.Pumpking:
                     if (Main.pumpkinMoon && !NPC.downedHalloweenKing)
                     {
-                        RewardsHandler.SpawnReward(npc, 18);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[18];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(18, npc);
                     }
                     break;
                 case NPCID.Everscream:
                     if (Main.snowMoon && !NPC.downedChristmasTree)
                     {
-                        RewardsHandler.SpawnReward(npc, 19);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[19];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(19, npc);
                     }
                     break;
                 case NPCID.SantaNK1:
                     if (Main.snowMoon && !NPC.downedChristmasSantank)
                     {
-                        RewardsHandler.SpawnReward(npc, 20);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[20];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(20, npc);
                     }
                     break;
                 case NPCID.IceQueen:
                     if (Main.snowMoon && !NPC.downedChristmasIceQueen)
                     {
-                        RewardsHandler.SpawnReward(npc, 21);
+                        if (TerrariaFlagRandomizer.isArchipelago)
+                        {
+                            string locationName = LocationSets.CheckToLocation[21];
+                            ArchipelagoHelper.locationsCompleted.Add(locationName);
+                            ArchipelagoHelper.CompleteLocationChecks();
+                        }
+                        else RewardsHandler.SpawnReward(21, npc);
                     }
                     break;
             }
