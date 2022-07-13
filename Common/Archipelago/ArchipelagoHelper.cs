@@ -10,6 +10,7 @@ namespace TerrariaFlagRandomizer.Common.Archipelago
     internal class ArchipelagoHelper
     {
         public static List<string> locationsCompleted = new List<string>();
+        public static Dictionary<string, bool> locationsSent = new Dictionary<string, bool>();
         public static void CompleteLocationChecks()
         {
             if(TerrariaFlagRandomizer.session == null || !TerrariaFlagRandomizer.session.Socket.Connected)
@@ -18,11 +19,17 @@ namespace TerrariaFlagRandomizer.Common.Archipelago
             }
             foreach(string location in locationsCompleted)
             {
-                RandomizerUtils.SendText(location + " checked");
+                /* Performance fix: don't try to send items that were already sent.
+                 * If you lose connection then reconnect, the client tries to send every checked
+                 * location every time there's a new check, causing the game to hang for a
+                 * non-trivial amount of time.
+                 */
+                if (locationsSent.ContainsKey(location)) continue;
+                //RandomizerUtils.SendText(location + " checked");
                 //if(ArchipelagoSets.LocationToArchipelagoID[location] == 7777422)
                 if(location == "MoonLordReward")
                 {
-                    // Send goal completion to archipelago server
+                    // Feature adjustment: send goal completion to archipelago server (let the server handle forfeiting items instead of the client)
                     try
                     {
                         StatusUpdatePacket packet = new StatusUpdatePacket();
@@ -34,12 +41,6 @@ namespace TerrariaFlagRandomizer.Common.Archipelago
                         RandomizerUtils.SendText("Reconnect to try again", 255, 0, 0);
                         return;
                     }
-                    // Complete all locations
-                    /*foreach(int reward in ArchipelagoSets.ArchipelagoToLocationID.Values)
-                    {
-                        RewardsHandler.SpawnReward(reward);
-                    }
-                    return;*/
                 }
                 try
                 {
@@ -51,7 +52,7 @@ namespace TerrariaFlagRandomizer.Common.Archipelago
                     RandomizerUtils.SendText("Reconnect to try again", 255, 0, 0);
                     return;
                 }
-                locationsCompleted.Remove(location);
+                locationsSent.Add(location, true);
             }
         }
     }

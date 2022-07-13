@@ -236,27 +236,14 @@ namespace TerrariaFlagRandomizer
                 return;
             }
             int port = Int32.Parse(args[2]);
-            bool retry = true;
-            while (retry)
+            session = ArchipelagoSessionFactory.CreateSession(args[1], port);
+            LoginResult result = session.TryConnectAndLogin("Terraria", args[0], new Version(0, 3, 2), ItemsHandlingFlags.IncludeStartingInventory);
+            if (!result.Successful)
             {
-                try
-                {
-                    session = ArchipelagoSessionFactory.CreateSession(args[1], port);
-                    LoginResult result = session.TryConnectAndLogin("Terraria", args[0], new Version(0, 3, 2), ItemsHandlingFlags.IncludeStartingInventory);
-                    if (!result.Successful)
-                    {
-                        RandomizerUtils.SendText(result.ToString());
-                        return;
-                    }
-                    retry = false;
-                }
-                catch (PlatformNotSupportedException)
-                {
-
-                } catch(Exception e)
-                {
-                    RandomizerUtils.SendText("Error connecting to Archipelago server: " + e.Message, 255, 0, 0);
-                }
+                RandomizerUtils.SendText(result.ToString());
+                // QoL adjustment: Automatically try disconnecting if the connection wasn't succesful
+                DisconnectFromServer();
+                return;
             }
             On.Terraria.Chat.ChatCommandProcessor.ProcessIncomingMessage += OnTerrariaChatMessage;
             session.Socket.PacketReceived += OnPacketReceived;
@@ -274,7 +261,7 @@ namespace TerrariaFlagRandomizer
             }
             On.Terraria.Chat.ChatCommandProcessor.ProcessIncomingMessage -= OnTerrariaChatMessage;
             session.Socket.PacketReceived -= OnPacketReceived;
-            session.Socket.Disconnect();
+            session.Socket.DisconnectAsync();
             RandomizerUtils.SendText("Disconnected from Archipelago server");
             isArchipelago = false;
         }
@@ -305,17 +292,37 @@ namespace TerrariaFlagRandomizer
             if(type == ArchipelagoPacketType.PrintJSON)
             {
                 ItemPrintJsonPacket received = (ItemPrintJsonPacket)packet;
-                int playerID = Int32.Parse(received.Data[0].Text);
-                long itemID = Int64.Parse(received.Data[2].Text);
-                long locationID = Int64.Parse(received.Data[4].Text);
-                string text = session.Players.GetPlayerAlias(playerID) + received.Data[1].Text;
-                text += session.Items.GetItemName(itemID) + received.Data[3].Text;
-                text += session.Locations.GetLocationNameFromId(locationID) + received.Data[5].Text;
+                string text = "";
+                /* Different way to build the text, should be able to handle arbitrarily long
+                 * messages, also handles both Item sent and Found own item messages properly
+                 */
+                foreach(JsonMessagePart part in received.Data)
+                {
+                    string add = "";
+                    if(part.Type == JsonMessagePartType.PlayerId)
+                    {
+                        add = session.Players.GetPlayerAlias(Int32.Parse(part.Text));
+                    }
+                    else if(part.Type == JsonMessagePartType.ItemId)
+                    {
+                        add = session.Items.GetItemName(Int64.Parse(part.Text));
+                    } else if(part.Type == JsonMessagePartType.LocationId)
+                    {
+                        add = session.Locations.GetLocationNameFromId(Int64.Parse(part.Text));
+                    } else if(part.Type == JsonMessagePartType.Color)
+                    {
+                        // Ignore
+                    }
+                    else
+                    {
+                        add = part.Text;
+                    }
+                    text += add;
+                }
                 RandomizerUtils.SendText(text);
                 if(session.ConnectionInfo.Slot != received.ReceivingPlayer) return;
                 int archipelagoItemID = received.Item.Item;
                 RewardsHandler.ReceiveArchipelagoItem(archipelagoItemID);
-                //ArchipelagoItemManager.ArchipelagoItemReceived(archipelagoItemID);
                 return;
             }
             RandomizerUtils.SendText("Received unhandled packet type " + type, 255, 255, 0);
