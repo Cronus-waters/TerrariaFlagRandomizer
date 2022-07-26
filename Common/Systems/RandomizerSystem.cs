@@ -187,18 +187,6 @@ namespace TerrariaFlagRandomizer.Common.Systems
                     worldInfo[1] = "Unknown";
                     break;
             }
-            /*switch (seedParams[2])
-            {
-                case "1":
-                    worldInfo[2] = "Corruption";
-                    break;
-                case "2":
-                    worldInfo[2] = "Crimson";
-                    break;
-                default:
-                    worldInfo[2] = "Unknown";
-                    break;
-            }*/
             if (wasCrimson) worldInfo[2] = "Crimson";
             else worldInfo[2] = "Corruption";
 
