@@ -5,5 +5,3 @@
 *.user
 *.sln
 *.suo
-Common/Commands/TestCommands/
-Content/TestContent/
