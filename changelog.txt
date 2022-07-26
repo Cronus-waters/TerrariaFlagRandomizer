@@ -1,1 +1,9 @@
-﻿
+﻿Updated the code to match API changes from the 1.4 preview branch
+Corrected some additional typos that led to incorrect loot bag drops
+Adjusted the items dropped by loot bags:
+[list]
+[*]Explosive Trap Rod moved from Post-Mechanical Bosses bags to its proper place in Pre-Skeletron bags
+[*]Added Chlorophyte Partisan to the Post-Mechanical Bosses weapons pool
+[*]Added Terraprisma to the Post-Golem weapons pool, in addition to the Post-Plantera pool
+[*]Added Scaly Truffle to the pool of Expert items
+[/list]
