@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaFlagRandomizer.Common.Sets;
@@ -32,73 +34,67 @@ namespace TerrariaFlagRandomizer.Content.Items
 			return true;
 		}
 
-		public override void RightClick(Player player)
+		public override void ModifyItemLoot(ItemLoot itemLoot)
 		{
-			var source = player.GetSource_OpenItem(Type);
-			// Progressive bar
-			int type = Main.rand.Next(TieredItemSets.PostPlanteraBars);
-			player.QuickSpawnItem(source, type, Main.rand.Next(15, 36));
+			// Progressive Bar rule
+			itemLoot.Add(new OneFromRulesRule(1, TieredItemSets.PostPlanteraBars));
 
-			// Progressive Material
-			int times = Main.rand.Next(3, 5);
-			for (int i = 0; i < times; i++)
-			{
-				int index = Main.rand.Next(TieredItemSets.PostPlanteraMaterials.GetLength(0));
-				type = TieredItemSets.PostPlanteraMaterials[index, 0];
-				int min = TieredItemSets.PostPlanteraMaterials[index, 1];
-				int max = TieredItemSets.PostPlanteraMaterials[index, 2] + 1;
-				player.QuickSpawnItem(source, type, Main.rand.Next(min, max));
-			}
+			// Progressive Material rule
+			itemLoot.Add(new OneFromRulesRule(1, TieredItemSets.PostPlanteraMaterials));
 
-			// Progressive weapons
-			times = Main.rand.Next(1, 3);
-			for (int i = 0; i < times; i++)
+			// Build Progressive Weapons rules
+			List<IItemDropRule> weaponRulesList = new List<IItemDropRule>();
+			foreach (int id in TieredItemSets.PostPlanteraWeapons)
 			{
-				type = Main.rand.Next(TieredItemSets.PostPlanteraWeapons);
-				player.QuickSpawnItem(source, type);
-				// Special case: Weapons that require ammo
-				if (TieredItemSets.AmmoWeapons.ContainsKey(type))
+				IItemDropRule rule = ItemDropRule.Common(id);
+				// Ammo considerations
+				if (TieredItemSets.AmmoWeapons.ContainsKey(id))
 				{
-					int index = type;
-					type = (int)TieredItemSets.AmmoWeapons[index].GetValue(0);
-					int min = (int)TieredItemSets.AmmoWeapons[index].GetValue(1);
-					int max = (int)TieredItemSets.AmmoWeapons[index].GetValue(2) + 1;
-					player.QuickSpawnItem(source, type, Main.rand.Next(min, max));
+					rule.OnSuccess(TieredItemSets.AmmoWeapons[id]);
 				}
+				weaponRulesList.Add(rule);
 			}
-
-			// Any accessory
-			times = Main.rand.Next(0, 3);
-			for (int i = 0; i < times; i++)
+			// Rules for dropping 1-3 weapons
+			IItemDropRule tripleWeaponRule = new FewFromRulesRule(3, 3, weaponRulesList.ToArray());
+			IItemDropRule doubleWeaponRule = new FewFromRulesRule(2, 3, weaponRulesList.ToArray());
+			IItemDropRule singleWeaponRule = new OneFromRulesRule(1, weaponRulesList.ToArray());
+			IItemDropRule[] weaponRules = new IItemDropRule[]
 			{
-				type = Main.rand.Next(TieredItemSets.Accessories);
-				player.QuickSpawnItem(source, type);
-			}
+				tripleWeaponRule,
+				doubleWeaponRule,
+				singleWeaponRule
+			};
+			itemLoot.Add(new SequentialRulesNotScalingWithLuckRule(1, weaponRules));
 
-			// Wings (10% chance)
-			if (Main.rand.NextBool(10))
+			// Rules for dropping 0-3 accessories
+			IItemDropRule threeAccessoriesRule = ItemDropRule.FewFromOptionsNotScalingWithLuck(3, 4, TieredItemSets.Accessories);
+			IItemDropRule twoAccessoriesRule = ItemDropRule.FewFromOptionsNotScalingWithLuck(2, 4, TieredItemSets.Accessories);
+			IItemDropRule oneAccessoryRule = ItemDropRule.FewFromOptionsNotScalingWithLuck(1, 4, TieredItemSets.Accessories);
+			IItemDropRule[] accessoryRules = new IItemDropRule[]
 			{
-				type = Main.rand.Next(TieredItemSets.Wings);
-				player.QuickSpawnItem(source, type);
-			}
+				threeAccessoriesRule,
+				twoAccessoriesRule,
+				oneAccessoryRule
+			};
+			itemLoot.Add(new SequentialRulesNotScalingWithLuckRule(1, accessoryRules));
 
-			// Expert Item (10% chance)
-			if (Main.rand.NextBool(10))
-			{
-				type = Main.rand.Next(TieredItemSets.ExpertItems);
-				player.QuickSpawnItem(source, type);
-			}
+			// Wings rule (10% chance)
+			IItemDropRule wingsRule = ItemDropRule.OneFromOptionsNotScalingWithLuck(10, TieredItemSets.Wings);
+			itemLoot.Add(wingsRule);
 
-			// Junk Item
-			times = Main.rand.Next(0, 5);
-			for (int i = 0; i < times; i++)
+			// Expert Item rule (10% chance)
+			IItemDropRule expertItemRule = ItemDropRule.OneFromOptionsNotScalingWithLuck(10, TieredItemSets.ExpertItems);
+			itemLoot.Add(expertItemRule);
+
+			// Junk Item rules
+			const int numJunk = 4;
+			List<IItemDropRule> junkRules = new List<IItemDropRule>();
+			for (int i = 1; i <= numJunk; i++)
 			{
-				int index = Main.rand.Next(TieredItemSets.JunkItems.GetLength(0));
-				type = TieredItemSets.JunkItems[index, 0];
-				int min = TieredItemSets.JunkItems[index, 1];
-				int max = TieredItemSets.JunkItems[index, 2] + 1;
-				player.QuickSpawnItem(source, type, Main.rand.Next(min, max));
+				IItemDropRule rule = new FewFromRulesRule(i, numJunk + 1, TieredItemSets.JunkItems);
+				junkRules.Add(rule);
 			}
+			itemLoot.Add(new SequentialRulesNotScalingWithLuckRule(1, junkRules.ToArray()));
 		}
 
 		public override Color? GetAlpha(Color lightColor)

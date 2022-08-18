@@ -130,14 +130,6 @@ namespace TerrariaFlagRandomizer.Common
                         RewardsHandler.SpawnReward(npc, 16);
                     }
                     break;
-                /*case NPCID.MoonLordCore:
-                    Main.NewText("Moon Lord defeated");
-                    if (!NPC.downedMoonlord)
-                    {
-                        Main.NewText("First Moon Lord kill");
-                        SpawnLootBag(npc);
-                    }
-                    break;*/
                 case NPCID.Mothron:
                     if (!NPCCheckSystem.firstMothronKill)
                     {

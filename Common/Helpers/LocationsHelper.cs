@@ -10,14 +10,8 @@ namespace TerrariaFlagRandomizer.Common.Helpers
         // TODO: Methods to remove checks based on type, or individual checks (based on name)
         // As well as methods to check if a check is accessible
         public static List<Location> locations;
-        public static List<string> inaccessible /*= new List<string>() { "Skeletron", "Hardmode", "MechBosses", "PlantBoss", "GolemBoss" }*/;
-        public static List<Reward> rewards/* = new List<Reward>()
-        // Test data
-        {
-            new Reward(1, "Skeletron", LocationSets.BossLocations[12]),
-            new Reward(3, "MechBosses", LocationSets.MinibossLocations[2]),
-            new Reward(2, "Hardmode", LocationSets.BossLocations[5])
-        }*/;
+        public static List<string> inaccessible;
+        public static List<Reward> rewards;
 
         public static void Initialize()
         {
