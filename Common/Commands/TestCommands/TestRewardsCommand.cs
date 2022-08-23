@@ -18,7 +18,7 @@ namespace TerrariaFlagRandomizer.Common.Commands.TestCommands
             {
                 throw new UsageException(args[0] + " is not an integer");
             }
-            if(id < 1 || id > 5)
+            if(id < 1 || id > 6)
             {
                 throw new UsageException("Argument flag_id is outside the allowed range (1..5)");
             }
