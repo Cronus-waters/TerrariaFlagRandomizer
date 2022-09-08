@@ -1,1 +1,6 @@
-﻿
+﻿Added a new generator option: Progressive Flags (turn it on in the mod settings before generating a world)
+ - Progressive flags turns the major world-altering flags (in this version, all of them) into a Progressive Flag reward
+ - The Progressive Flag reward gives you the next flag you're supposed to get, in the order of vanilla progression (so you'll always get Skeletron first, then Hardmode, etc)
+ - Old seeds are still compatible with this version, and work as if Progressive Flags was turned off
+
+ Added proper sprites for all loot bags

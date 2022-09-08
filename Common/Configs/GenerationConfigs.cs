@@ -9,7 +9,7 @@ namespace TerrariaFlagRandomizer.Common.Configs
 
         [Header("Generator Settings")]
         [Label("Progressive Flags")]
-        [Tooltip("Turns all flags into Progressive Flag rewards, which rewards one of the three in that specific order.")]
+        [Tooltip("Turns all major world-altering flags into Progressive Flag rewards, which rewards one of the three in that specific order.")]
         [DefaultValue(false)]
         public bool ProgressiveFlagsToggle;
     }

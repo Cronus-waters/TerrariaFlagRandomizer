@@ -5,3 +5,5 @@
 *.user
 *.sln
 *.suo
+Assets/Images/Reference/*
+/Assets/Reference

@@ -12,9 +12,9 @@ namespace TerrariaFlagRandomizer.Content.Items
 {
 	internal class LootBag5 : ModItem
 	{
-		public override string Texture => "Terraria/Images/Item_" + ItemID.BossBagOgre;
+        public override string Texture => TerrariaFlagRandomizer.AssetPath + "Images/Items/LootBag5";
 
-		public override void SetStaticDefaults()
+        public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tier 5 Loot Bag");
 			Tooltip.SetDefault("{$CommonItemTooltip.RightClickToOpen}\nPost-Plantera items");
