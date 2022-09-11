@@ -17,6 +17,10 @@ namespace TerrariaFlagRandomizer.Common
             string location = LocationSets.CheckToLocation[type];
             int reward = RandomizerSystem.locationRewardPairs[location];
             if (reward == 0) SpawnLootBag(npc);
+            else if(reward == 6)
+            {
+                SetFlag(++RandomizerSystem.progressiveTier, npc.boss);
+            }
             else SetFlag(reward, npc.boss);
         }
 

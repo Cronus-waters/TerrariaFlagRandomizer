@@ -1,43 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
-using Terraria.ID;
 
 namespace TerrariaFlagRandomizer.Common.Sets
 {
     public class LocationSets
     {
+        public enum ProgressionLevels
+        {
+            None = 0,
+            Skeletron,
+            Hardmode,
+            Mechs,
+            Plantera,
+            Golem
+        }
+
         public static List<Location> BossLocations = new List<Location>
         {
-            new Location("KingSlimeReward", "Boss", Array.Empty<string>()),
-            new Location("EoCReward","Boss", Array.Empty<string>()),
-            new Location("EoWReward", "Boss", Array.Empty<string>()),
-            new Location("BoCReward", "Boss", Array.Empty<string>()),
-            new Location("SkeletronReward", "Boss", Array.Empty<string>()),
-            new Location("QueenBeeReward", "Boss", Array.Empty<string>()),
-            new Location("DeerclopsReward", "Boss", Array.Empty<string>()),
-            new Location("WoFReward", "Boss", Array.Empty<string>()),
-            new Location("QueenSlimeReward", "Boss", new string[]{ "Hardmode" }),
-            new Location("TwinsReward", "Boss", new string[]{ "Hardmode" }),
-            new Location("DestroyerReward", "Boss", new string[]{ "Hardmode" }),
-            new Location("PrimeReward", "Boss", new string[]{ "Hardmode" }),
-            new Location("PlanteraReward", "Boss", new string[]{ "Hardmode", "MechBosses" }),
-            new Location("GolemReward", "Boss", new string[]{ "Hardmode", "PlantBoss" }),
-            new Location("FishronReward", "Boss", new string[]{ "Hardmode" }),
-            new Location("EmpressReward", "Boss", new string[]{ "Hardmode", "PlantBoss" }),
-            new Location("CultistReward", "Boss", new string[]{ "Skeletron", "Hardmode", "GolemBoss" }),
-            new Location("MourningWoodReward", "Boss", new string[]{ "Skeletron", "Hardmode", "PlantBoss" }),
-            new Location("PumpkingReward", "Boss", new string[]{ "Skeletron", "Hardmode", "PlantBoss" }),
-            new Location("EverscreamReward", "Boss", new string[]{ "Skeletron", "Hardmode", "PlantBoss" }),
-            new Location("SantankReward", "Boss", new string[]{ "Skeletron", "Hardmode", "PlantBoss" }),
-            new Location("IceQueenReward", "Boss", new string[]{ "Skeletron", "Hardmode", "PlantBoss" })
+            new Location("KingSlimeReward", "Boss", Array.Empty<string>(), (int)ProgressionLevels.None),
+            new Location("EoCReward","Boss", Array.Empty<string>(), (int)ProgressionLevels.None),
+            new Location("EoWReward", "Boss", Array.Empty<string>(), (int)ProgressionLevels.None),
+            new Location("BoCReward", "Boss", Array.Empty<string>(), (int)ProgressionLevels.None),
+            new Location("SkeletronReward", "Boss", Array.Empty<string>(), (int)ProgressionLevels.None),
+            new Location("QueenBeeReward", "Boss", Array.Empty<string>(), (int)ProgressionLevels.None),
+            new Location("DeerclopsReward", "Boss", Array.Empty<string>(), (int)ProgressionLevels.None),
+            new Location("WoFReward", "Boss", Array.Empty<string>(), (int)ProgressionLevels.None),
+            new Location("QueenSlimeReward", "Boss", new string[]{ "Hardmode" }, (int)ProgressionLevels.Hardmode),
+            new Location("TwinsReward", "Boss", new string[]{ "Hardmode" }, (int)ProgressionLevels.Hardmode),
+            new Location("DestroyerReward", "Boss", new string[]{ "Hardmode" }, (int)ProgressionLevels.Hardmode),
+            new Location("PrimeReward", "Boss", new string[]{ "Skeletron", "Hardmode" }, (int)ProgressionLevels.Hardmode),
+            new Location("PlanteraReward", "Boss", new string[]{ "Hardmode", "MechBosses" }, (int)ProgressionLevels.Mechs),
+            new Location("GolemReward", "Boss", new string[]{ "Hardmode", "PlantBoss" }, (int)ProgressionLevels.Plantera),
+            new Location("FishronReward", "Boss", new string[]{ "Hardmode" }, (int)ProgressionLevels.Hardmode),
+            new Location("EmpressReward", "Boss", new string[]{ "Hardmode", "PlantBoss" }, (int)ProgressionLevels.Plantera),
+            new Location("CultistReward", "Boss", new string[]{ "Skeletron", "Hardmode", "GolemBoss" }, (int)ProgressionLevels.Golem),
+            new Location("MourningWoodReward", "Boss", new string[]{ "Skeletron", "Hardmode", "PlantBoss" }, (int)ProgressionLevels.Plantera),
+            new Location("PumpkingReward", "Boss", new string[]{ "Skeletron", "Hardmode", "PlantBoss" }, (int)ProgressionLevels.Plantera),
+            new Location("EverscreamReward", "Boss", new string[]{ "Skeletron", "Hardmode", "PlantBoss" }, (int)ProgressionLevels.Plantera),
+            new Location("SantankReward", "Boss", new string[]{ "Skeletron", "Hardmode", "PlantBoss" }, (int)ProgressionLevels.Plantera),
+            new Location("IceQueenReward", "Boss", new string[]{ "Skeletron", "Hardmode", "PlantBoss" }, (int)ProgressionLevels.Plantera)
         };
 
         public static List<Location> MinibossLocations = new List<Location>
         {
-            new Location("MothronReward", "Miniboss", new string[]{ "Hardmode", "PlantBoss" }),
-            new Location("HallowMimicReward", "Miniboss", new string[]{ "Hardmode" }),
-            new Location("CorruptMimicReward", "Miniboss", new string[]{ "Hardmode" }),
-            new Location("CrimsonMimicReward", "Miniboss", new string[]{ "Hardmode" })
+            new Location("MothronReward", "Miniboss", new string[]{ "Hardmode", "PlantBoss" }, (int)ProgressionLevels.Plantera),
+            new Location("HallowMimicReward", "Miniboss", new string[]{ "Hardmode" }, (int)ProgressionLevels.Hardmode),
+            new Location("CorruptMimicReward", "Miniboss", new string[]{ "Hardmode" }, (int)ProgressionLevels.Hardmode),
+            new Location("CrimsonMimicReward", "Miniboss", new string[]{ "Hardmode" }, (int)ProgressionLevels.Hardmode)
         };
 
         public static Dictionary<int, string> CheckToLocation = new Dictionary<int, string>

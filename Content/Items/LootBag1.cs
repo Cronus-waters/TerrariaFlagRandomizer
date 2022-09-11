@@ -12,7 +12,7 @@ namespace TerrariaFlagRandomizer.Content.Items
 {
     internal class LootBag1 : ModItem
     {
-        public override string Texture => "Terraria/Images/Item_" + ItemID.BossBagOgre;
+		public override string Texture => TerrariaFlagRandomizer.AssetPath + "Images/Items/LootBag1";
 
         public override void SetStaticDefaults()
         {

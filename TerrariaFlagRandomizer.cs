@@ -8,7 +8,7 @@ namespace TerrariaFlagRandomizer
 {
 	public class TerrariaFlagRandomizer : Mod
 	{
-        //public const string AssetPath = $"{nameof(TerrariaFlagRandomizer)}/Assets/";
+        public const string AssetPath = $"{nameof(TerrariaFlagRandomizer)}/Assets/";
 
         public override void Load()
         {

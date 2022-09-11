@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using Terraria.ModLoader;
 using TerrariaFlagRandomizer.Common.Sets;
+using TerrariaFlagRandomizer.Common.Configs;
 
 namespace TerrariaFlagRandomizer.Common.Helpers
 {
@@ -12,12 +14,14 @@ namespace TerrariaFlagRandomizer.Common.Helpers
         public static List<Location> locations;
         public static List<string> inaccessible;
         public static List<Reward> rewards;
+        public static int progressiveLevel;
 
         public static void Initialize()
         {
             locations = LocationSets.GetAllLocations();
             inaccessible = new List<string>() { "Skeletron", "Hardmode", "MechBosses", "PlantBoss", "GolemBoss" };
             rewards = new List<Reward>();
+            progressiveLevel = 0;
         }
 
         public static void ResetLocations()
@@ -29,13 +33,25 @@ namespace TerrariaFlagRandomizer.Common.Helpers
         public static void RemoveInacessible(List<string> requirements)
         {
             if (locations == null) Initialize();
-            for(int i = 0; i < locations.Count; i++)
+            bool progressiveFlags = ModContent.GetInstance<GenerationConfigs>().ProgressiveFlagsToggle;
+            for (int i = 0; i < locations.Count; i++)
             {
                 Location location = locations[i];
-                if (requirements.Intersect(location.requirements).Any())
+                if (progressiveFlags)
                 {
-                    locations.RemoveAt(i);
-                    i--;
+                    if (location.progressionLevel > progressiveLevel)
+                    {
+                        locations.RemoveAt(i);
+                        i--;
+                    }
+                }
+                else
+                {
+                    if (requirements.Intersect(location.requirements).Any())
+                    {
+                        locations.RemoveAt(i);
+                        i--;
+                    }
                 }
             }
         }

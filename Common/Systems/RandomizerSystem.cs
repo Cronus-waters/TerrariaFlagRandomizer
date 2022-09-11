@@ -1,30 +1,34 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.IO;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
+using Terraria.Utilities;
 using TerrariaFlagRandomizer.Common.Helpers;
 using TerrariaFlagRandomizer.Common.Sets;
-using Terraria.Utilities;
-using System;
-using System.IO;
-using Terraria.ModLoader.IO;
+using TerrariaFlagRandomizer.Common.Configs;
 
 namespace TerrariaFlagRandomizer.Common.Systems
 {
     public class RandomizerSystem : ModSystem
     {
         public static Dictionary<string, int> locationRewardPairs;
+        public static int progressiveTier;
 
         public override void OnWorldLoad()
         {
             locationRewardPairs = new Dictionary<string, int>();
+            progressiveTier = -1;
         }
 
         public override void OnWorldUnload()
         {
             locationRewardPairs = null;
+            progressiveTier = -1;
         }
 
         public override void SaveWorldData(TagCompound tag)
@@ -37,6 +41,10 @@ namespace TerrariaFlagRandomizer.Common.Systems
                     ["reward"] = pair.Value
                 }).ToList();
             }
+            if(progressiveTier >= 0)
+            {
+                tag["progressiveTier"] = progressiveTier;
+            }
         }
 
         public override void LoadWorldData(TagCompound tag)
@@ -47,6 +55,10 @@ namespace TerrariaFlagRandomizer.Common.Systems
                 list.Add(entry.GetString("location"), entry.GetInt("reward"));
             }
             locationRewardPairs = list;
+            if (tag.ContainsKey("progressiveTier"))
+            {
+                progressiveTier = tag.GetAsInt("progressiveTier");
+            }
         }
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {
@@ -83,18 +95,36 @@ namespace TerrariaFlagRandomizer.Common.Systems
             UnifiedRandom rand = new UnifiedRandom(Main.ActiveWorldFileData.Seed);
             RandomizerSystem.locationRewardPairs = new Dictionary<string, int>();
 
+            // Get generator settings from mod config
+            bool progressiveFlags = ModContent.GetInstance<GenerationConfigs>().ProgressiveFlagsToggle;
+            if (progressiveFlags)
+            {
+                RandomizerSystem.progressiveTier = 0;
+            }
+
             Location location = null;
             // Shuffle important flags
             Console.WriteLine("Shuffling boss flags");
             progress.Message = "Randomizing flags";
+            Reward reward = null;
+            int flagID = 0;
             for(int i = 1; i < 6; i++)
             {
                 location = FindLocation(rand, i == 1);
-                Reward reward = new Reward(i, Flags.FlagNames[i], location);
+                if (progressiveFlags)
+                {
+                    flagID = 6;
+                    LocationsHelper.progressiveLevel += 1;
+                }
+                else
+                {
+                    flagID = i;
+                    LocationsHelper.inaccessible.Remove(Flags.FlagNames[flagID]);
+                }
+                reward = new Reward(flagID, Flags.FlagNames[flagID], location);
                 LocationsHelper.rewards.Add(reward);
-                LocationsHelper.inaccessible.Remove(Flags.FlagNames[i]);
                 RandomizerSystem.locationRewardPairs.Add(location.name, reward.id);
-                Console.WriteLine("Flag " + Flags.FlagNames[i] + " added at location " + location.name);
+                Console.WriteLine("Flag " + Flags.FlagNames[flagID] + " added at location " + location.name);
                 numLocations--;
             }
 
@@ -105,7 +135,7 @@ namespace TerrariaFlagRandomizer.Common.Systems
             for(int i = 0; i < numLocations; i++)
             {
                 location = FindLocation(rand, false);
-                Reward reward = new Reward(0, "Loot bag", location);
+                reward = new Reward(0, "Loot bag", location);
                 Console.WriteLine("Loot Bag added at location " + location.name);
                 LocationsHelper.rewards.Add(reward);
                 RandomizerSystem.locationRewardPairs.Add(location.name, reward.id);
@@ -196,6 +226,11 @@ namespace TerrariaFlagRandomizer.Common.Systems
             writer.WriteLine("\tDifficulty: " + worldInfo[1]);
             writer.WriteLine("\tWorld Size: " + worldInfo[0]);
             writer.WriteLine("\tWorld Evil: " + worldInfo[2]);
+            writer.WriteLine("}\n");
+
+            // Write generator settings
+            writer.WriteLine("Settings:\n{");
+            writer.WriteLine("\tProgressive Flags: " + ModContent.GetInstance<GenerationConfigs>().ProgressiveFlagsToggle);
             writer.WriteLine("}\n");
 
             // Write rewards list
