@@ -28,7 +28,7 @@ namespace TerrariaFlagRandomizer.Common.Sets
             new Location("QueenSlimeReward", "Boss", new string[]{ "Hardmode" }, (int)ProgressionLevels.Hardmode),
             new Location("TwinsReward", "Boss", new string[]{ "Hardmode" }, (int)ProgressionLevels.Hardmode),
             new Location("DestroyerReward", "Boss", new string[]{ "Hardmode" }, (int)ProgressionLevels.Hardmode),
-            new Location("PrimeReward", "Boss", new string[]{ "Hardmode" }, (int)ProgressionLevels.Hardmode),
+            new Location("PrimeReward", "Boss", new string[]{ "Skeletron", "Hardmode" }, (int)ProgressionLevels.Hardmode),
             new Location("PlanteraReward", "Boss", new string[]{ "Hardmode", "MechBosses" }, (int)ProgressionLevels.Mechs),
             new Location("GolemReward", "Boss", new string[]{ "Hardmode", "PlantBoss" }, (int)ProgressionLevels.Plantera),
             new Location("FishronReward", "Boss", new string[]{ "Hardmode" }, (int)ProgressionLevels.Hardmode),
