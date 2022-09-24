@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Terraria.ModLoader;
 using TerrariaFlagRandomizer.Common.Sets;
 using TerrariaFlagRandomizer.Common.Configs;
+using TerrariaFlagRandomizer.Common.Systems;
 
 namespace TerrariaFlagRandomizer.Common.Helpers
 {
@@ -11,37 +12,52 @@ namespace TerrariaFlagRandomizer.Common.Helpers
     {
         // TODO: Methods to remove checks based on type, or individual checks (based on name)
         // As well as methods to check if a check is accessible
-        public static List<Location> locations;
+        public static List<Location> allLocations;
+        public static List<Location> defaultLocations;
+        public static List<Location> chestLocations;
         public static List<string> inaccessible;
         public static List<Reward> rewards;
         public static int progressiveLevel;
 
         public static void Initialize()
         {
-            locations = LocationSets.GetAllLocations();
+            allLocations = new List<Location>();
+            defaultLocations = new List<Location>();
+            chestLocations = new List<Location>();
             inaccessible = new List<string>() { "Skeletron", "Hardmode", "MechBosses", "PlantBoss", "GolemBoss" };
             rewards = new List<Reward>();
             progressiveLevel = 0;
+            //MakeLocations();
+        }
+
+        public static void MakeLocations()
+        {
+            defaultLocations = LocationSets.GetAllLocations();
+            if (ModContent.GetInstance<GenerationConfigs>().ChestsanityToggle && RandomizerSystem.chestsanityMaxCounts != null)
+            {
+                chestLocations = MakeChestLocations();
+            }
+            allLocations = defaultLocations.Concat(chestLocations).ToList();
         }
 
         public static void ResetLocations()
         {
-            locations.Clear();
-            locations = LocationSets.GetAllLocations();
+            allLocations.Clear();
+            allLocations = defaultLocations.Concat(chestLocations).ToList();
         }
 
         public static void RemoveInacessible(List<string> requirements)
         {
-            if (locations == null) Initialize();
+            if (allLocations == null) Initialize();
             bool progressiveFlags = ModContent.GetInstance<GenerationConfigs>().ProgressiveFlagsToggle;
-            for (int i = 0; i < locations.Count; i++)
+            for (int i = 0; i < allLocations.Count; i++)
             {
-                Location location = locations[i];
+                Location location = allLocations[i];
                 if (progressiveFlags)
                 {
                     if (location.progressionLevel > progressiveLevel)
                     {
-                        locations.RemoveAt(i);
+                        allLocations.RemoveAt(i);
                         i--;
                     }
                 }
@@ -49,7 +65,7 @@ namespace TerrariaFlagRandomizer.Common.Helpers
                 {
                     if (requirements.Intersect(location.requirements).Any())
                     {
-                        locations.RemoveAt(i);
+                        allLocations.RemoveAt(i);
                         i--;
                     }
                 }
@@ -97,6 +113,30 @@ namespace TerrariaFlagRandomizer.Common.Helpers
                 return Array.Empty<string>();
             }
             throw new NotImplementedException();
+        }
+
+        public static List<Location> MakeChestLocations()
+        {
+            List<Location> list = new List<Location>();
+            int[] chestCounts = RandomizerSystem.chestsanityMaxCounts;
+            for(int chestType = 0; chestType < chestCounts.Length; chestType++)
+            {
+                for(int i = 0; i < chestCounts[chestType]; i++)
+                {
+                    Location location = RandomizerUtils.MakeChestLocation(chestType, i);
+                    list.Add(location);
+                }
+            }
+            return list;
+        }
+
+        public static void RemoveSelected()
+        {
+            foreach(Reward reward in rewards)
+            {
+                Location location = reward.location;
+                allLocations.Remove(location);
+            }
         }
     }
 }

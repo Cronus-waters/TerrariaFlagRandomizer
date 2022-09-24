@@ -16,7 +16,7 @@ namespace TerrariaFlagRandomizer.Common
         {
             string location = LocationSets.CheckToLocation[type];
             int reward = RandomizerSystem.locationRewardPairs[location];
-            if (reward == 0) SpawnLootBag(npc);
+            if (reward == 0) SpawnLootBagOnNPC(npc);
             else if(reward == 6)
             {
                 SetFlag(++RandomizerSystem.progressiveTier, npc.boss);
@@ -24,7 +24,14 @@ namespace TerrariaFlagRandomizer.Common
             else SetFlag(reward, npc.boss);
         }
 
-        public static void SpawnLootBag(NPC npc)
+        public static void SpawnRewardGeneric(int type)
+        {
+            if (type == 0) SpawnLootBagOnPlayers();
+            else if (type == 6) SetFlag(++RandomizerSystem.progressiveTier, false);
+            else SetFlag(type, false);
+        }
+
+        public static void SpawnLootBagOnNPC(NPC npc)
         {
             var source = npc.GetSource_Loot();
             int type;
@@ -34,7 +41,26 @@ namespace TerrariaFlagRandomizer.Common
             else if (Main.hardMode) type = ModContent.ItemType<LootBag3>();
             else if (NPC.downedBoss3) type = ModContent.ItemType<LootBag2>();
             else type = ModContent.ItemType<LootBag1>();
-            Item.NewItem(source, (int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, type);
+            npc.DropItemInstanced(npc.position, npc.Size, type, interactionRequired: false);
+        }
+
+        public static void SpawnLootBagOnPlayers()
+        {
+            //var source = npc.GetSource_Loot();
+            int type;
+            if (NPC.downedGolemBoss) type = ModContent.ItemType<LootBag6>();
+            else if (NPC.downedPlantBoss) type = ModContent.ItemType<LootBag5>();
+            else if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3) type = ModContent.ItemType<LootBag4>();
+            else if (Main.hardMode) type = ModContent.ItemType<LootBag3>();
+            else if (NPC.downedBoss3) type = ModContent.ItemType<LootBag2>();
+            else type = ModContent.ItemType<LootBag1>();
+            foreach(Player player in Main.player)
+            {
+                if (!player.active/* || player.dead*/) continue;
+                var source = player.GetSource_GiftOrReward();
+                player.QuickSpawnItem(source, type);
+            }
+            //Item.NewItem(source, (int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, type);
         }
 
         public static void TriggerHardmode(bool fromBoss = false)

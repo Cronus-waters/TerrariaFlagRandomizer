@@ -86,5 +86,7 @@ namespace TerrariaFlagRandomizer.Common.Sets
             MinibossLocations.ForEach(location => list.Add(location));
             return list;
         }
+
+        public static string[] chestNames = new string[11] { "ChestCommon", "ChestIce", "ChestDesert", "ChestDungeon", "ChestJungle", "ChestShadow", "ChestTemple", "ChestSky", "ChestPyramid", "ChestOcean", "ChestBiome" };
     }
 }
