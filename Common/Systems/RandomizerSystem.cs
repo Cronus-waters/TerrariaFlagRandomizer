@@ -566,6 +566,7 @@ namespace TerrariaFlagRandomizer.Common.Systems
             }
             writer.WriteLine("}\n");
 
+            // Remove everything until the next comment
             writer.WriteLine("Debug");
             writer.WriteLine("Common " + RandomizerSystem.chestsanityMaxCounts[0]);
             writer.WriteLine("Ice " + RandomizerSystem.chestsanityMaxCounts[1]);

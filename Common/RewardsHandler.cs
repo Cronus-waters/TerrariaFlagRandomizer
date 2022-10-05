@@ -24,6 +24,13 @@ namespace TerrariaFlagRandomizer.Common
             else SetFlag(reward, npc.boss);
         }
 
+        public static void SpawnReward(int type)
+        {
+            string location = LocationSets.CheckToLocation[type];
+            int reward = RandomizerSystem.locationRewardPairs[location];
+            SpawnRewardGeneric(reward);
+        }
+
         public static void SpawnRewardGeneric(int type)
         {
             if (type == 0) SpawnLootBagOnPlayers();

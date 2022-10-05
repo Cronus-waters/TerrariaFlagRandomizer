@@ -49,6 +49,14 @@ namespace TerrariaFlagRandomizer.Common.Sets
             new Location("CrimsonMimicReward", "Miniboss", new string[]{ "Hardmode" }, (int)ProgressionLevels.Hardmode)
         };
 
+        public static List<Location> EventLocations = new List<Location>
+        {
+            new Location("GoblinArmyReward", "Event", Array.Empty<string>(), (int)ProgressionLevels.None),
+            new Location("FrostLegionReward", "Event", new string[]{ "Hardmode" }, (int)ProgressionLevels.Hardmode),
+            new Location("PirateInvasionReward", "Event", new string[]{ "Hardmode" }, (int)ProgressionLevels.Hardmode),
+            new Location("MartianMadnessReward", "Event", new string[]{ "Hardmode", "GolemBoss" }, (int)ProgressionLevels.Golem)
+        };
+
         public static Dictionary<int, string> CheckToLocation = new Dictionary<int, string>
         {
             { 0, "KingSlimeReward" },
@@ -76,7 +84,11 @@ namespace TerrariaFlagRandomizer.Common.Sets
             { 22, "MothronReward" },
             { 23, "HallowMimicReward" },
             { 24, "CorruptMimicReward" },
-            { 25, "CrimsonMimicReward" }
+            { 25, "CrimsonMimicReward" },
+            { 26, "GoblinArmyReward" },
+            { 27, "FrostLegionReward" },
+            { 28, "PirateInvasionReward" },
+            { 29, "MartianMadnessReward" }
         };
 
         public static List<Location> GetAllLocations()
@@ -84,6 +96,7 @@ namespace TerrariaFlagRandomizer.Common.Sets
             List<Location> list = new List<Location>();
             BossLocations.ForEach(location => list.Add(location));
             MinibossLocations.ForEach(location => list.Add(location));
+            EventLocations.ForEach(location => list.Add(location));
             return list;
         }
 
